@@ -22,6 +22,16 @@ public class Airplane : MonoBehaviour {
 	private GameObject[] _wheels;
 	
 	/// <summary>
+	/// The bomb.
+	/// </summary>
+	public GameObject bomb;
+	
+	/// <summary>
+	/// The bombs.
+	/// </summary>
+	public GameObject[] bombs;
+	
+	/// <summary>
 	/// The front wheel.
 	/// </summary>
 	public GameObject frontWheel;
@@ -32,19 +42,14 @@ public class Airplane : MonoBehaviour {
 	public GameObject frontWheelClap;
 	
 	/// <summary>
-	/// The left bomb.
-	/// </summary>
-	public GameObject leftBomb;
-	
-	/// <summary>
 	/// The start position of the left bomb on the airplane.
 	/// </summary>
-	public GameObject[] leftBombPosition;
+	public GameObject leftBombPosition;
 	
 	/// <summary>
 	/// The left missile.
 	/// </summary>
-	public GameObject leftMissile;
+	private GameObject leftMissile;
 	
 	/// <summary>
 	/// The start position of the left missile on the airplane.
@@ -69,7 +74,7 @@ public class Airplane : MonoBehaviour {
 	/// <summary>
 	/// The maximum hits to destroy an airplane.
 	/// </summary>
-	public int maxHits;
+	public int maxHits = 2;
 	
 	/// <summary>
 	/// The maximum count of missiles.
@@ -87,24 +92,24 @@ public class Airplane : MonoBehaviour {
 	public GameObject missile;
 	
 	/// <summary>
+	/// The duration to move a clap.
+	/// </summary>
+	public float moveClapDuration = 5f;
+	
+	/// <summary>
 	/// The duration to move a component.
 	/// </summary>
 	public float moveLandingGearDuration = 250f;
-	
-	/// <summary>
-	/// The right bomb.
-	/// </summary>
-	public GameObject rightBomb;
-	
+		
 	/// <summary>
 	/// The start position of the right bomb on the airplane.
 	/// </summary>
-	public GameObject[] rightBombPosition;
+	public GameObject rightBombPosition;
 	
 	/// <summary>
 	/// The right missile.
 	/// </summary>
-	public GameObject rightMissile;
+	private GameObject rightMissile;
 	
 	/// <summary>
 	/// The start position of the right missile on the airplane.
@@ -123,6 +128,8 @@ public class Airplane : MonoBehaviour {
 	
 	
 	// properties
+	
+	public int CurrentBombCount { get; set; }
 	
 	/// <summary>
 	/// Gets or sets the current munition count.
@@ -147,17 +154,7 @@ public class Airplane : MonoBehaviour {
 	/// <c>true</c> if front clap is open; otherwise, <c>false</c>.
 	/// </value>
 	private bool FrontClapIsOpen { get; set; }
-	
-	/// <summary>
-	/// Gets the front wheel clap transform.
-	/// </summary>
-	/// <value>
-	/// The front wheel clap transform.
-	/// </value>
-	public Transform FrontWheelClapTransform {
-		get { return frontWheelClap.transform; }
-	}
-	
+		
 	/// <summary>
 	/// Gets or sets the hit count.
 	/// </summary>
@@ -219,17 +216,7 @@ public class Airplane : MonoBehaviour {
 	/// The left reload time.
 	/// </value>
 	public float LeftReloadTime { get; private set; }
-	
-	/// <summary>
-	/// Gets the left wheel clap transform.
-	/// </summary>
-	/// <value>
-	/// The left wheel clap transform.
-	/// </value>
-	public Transform LeftWheelClapTransform {
-		get { return leftWheelClap.transform; }
-	}
-	
+		
 	/// <summary>
 	/// Gets or sets a value indicating whether the right clap is open.
 	/// </summary>
@@ -266,16 +253,6 @@ public class Airplane : MonoBehaviour {
 	/// </value>
 	public float RightReloadTime { get; private set; }
 	
-	/// <summary>
-	/// Gets the right wheel clap transform.
-	/// </summary>
-	/// <value>
-	/// The right wheel clap transform.
-	/// </value>
-	public Transform RightWheelClapTransform {
-		get { return rightWheelClap.transform; }
-	}
-	
 	
 	// initializer
 	
@@ -292,8 +269,11 @@ public class Airplane : MonoBehaviour {
 	public void Start(){
 		
 		// equip
+		
 		SetMissile(ref leftMissile, leftMissilePosition);
 		SetMissile(ref rightMissile, rightMissilePosition);
+		
+		PrepareBombs();
 		
 		
 		// airplane wheel positions
@@ -312,7 +292,7 @@ public class Airplane : MonoBehaviour {
 		_movementWheelsUp = new float[][] {
 			new float[] { 0.14f, -0.24f, 0 }, // front wheel
 			new float[] { 1.09f, 0.2f, 0.2f  }, // left wheel
-			new float[] { 0.44f, 0.15f, 0  } // right wheel
+			new float[] { 0.44f, 0.2f, 0  } // right wheel
 		};
 	}
 	
@@ -343,6 +323,37 @@ public class Airplane : MonoBehaviour {
 	
 	private void Damage(){}
 	
+	public void DropBomb(){
+	
+		if(0 < CurrentBombCount){
+			
+			const float t = 0.2f;
+			
+			// search first non null object
+			for(int i = 0; bombs.Length > i; ++i)
+				if(bombs[i]){
+				
+					// set bomb on a position thats can not collide the airplane self
+					Vector3 p = bombs[i].transform.localPosition;
+					bombs[i].transform.localPosition = new Vector3(
+														Mathf.Lerp(p.x, 0, t), 
+														Mathf.Lerp(p.y, -7f, t), 
+														Mathf.Lerp(p.z, 0, t));
+					
+					// detach the bomb from parent and add a velocity
+					bombs[i].transform.parent = null;
+					bombs[i].rigidbody.velocity = 0.5f * rigidbody.velocity;
+					bombs[i].rigidbody.useGravity = true;
+					
+					// remove bomb reference from array
+					bombs[i] = null;
+					break;
+				}
+			
+			--CurrentBombCount;
+		}	
+	}
+	
 	/// <summary>
 	/// Lifts the landing gear down.
 	/// </summary>
@@ -350,11 +361,21 @@ public class Airplane : MonoBehaviour {
 		
 		MoveWheels(ref _movementWheelsDown);
 		
+		Quaternion r = new Quaternion(0, 0, 0, 0);
+		
 		if(!FrontClapIsOpen){
-			Quaternion r = new Quaternion(0, 0, 0, 0);
-    		frontWheelClap.transform.localRotation = Quaternion.Slerp(frontWheelClap.transform.localRotation, r, 5f);		
-			//FrontWheelClapTransform.Rotate(Vector3.forward, 106.5f, Space.Self);
+    		frontWheelClap.transform.localRotation = Quaternion.Slerp(frontWheelClap.transform.localRotation, r, moveClapDuration);		
 			FrontClapIsOpen = true;
+		}
+		
+		if(!LeftClapIsOpen){
+			leftWheelClap.transform.localRotation = Quaternion.Slerp(leftWheelClap.transform.localRotation, r, moveClapDuration);
+			LeftClapIsOpen = true;
+		}
+		
+		if(!RightClapIsOpen){
+			rightWheelClap.transform.localRotation = Quaternion.Slerp(rightWheelClap.transform.localRotation, r, moveClapDuration);
+			RightClapIsOpen = true;
 		}
 	}
 	
@@ -365,14 +386,31 @@ public class Airplane : MonoBehaviour {
 		
 		MoveWheels(ref _movementWheelsUp);
 		
-		//FrontWheelClapTransform = Quaternion.Lerp(FrontWheelClapTransform.z,0f,(Time.time / duration));
-		//FrontWheelClapTransform = new Quaternion(0,0,Mathf.Lerp(FrontWheelClapTransform.z,-106.5f,(Time.time / duration)),0);
-			
 		if(FrontClapIsOpen){
-			Quaternion r = new Quaternion(0, 0, -106.5f, 0);
-    		frontWheelClap.transform.localRotation = Quaternion.Slerp(frontWheelClap.transform.localRotation, r, 5f);
-			//FrontWheelClapTransform.Rotate(Vector3.forward, Mathf.Lerp(FrontWheelClapTransform.rotation.z, -106.5f, Time.time / moveLandingGearDuration), Space.Self);
+    		frontWheelClap.transform.localRotation = Quaternion.Slerp(frontWheelClap.transform.localRotation, new Quaternion(0, 0, -53.25f, 0), moveClapDuration);
 			FrontClapIsOpen = false;
+		}
+		
+		if(LeftClapIsOpen){
+    		leftWheelClap.transform.localRotation = Quaternion.Slerp(leftWheelClap.transform.localRotation, new Quaternion(0, 0, 50.6f, 0), moveClapDuration);
+			LeftClapIsOpen = false;
+		}
+		
+		if(RightClapIsOpen){
+    		rightWheelClap.transform.localRotation = Quaternion.Slerp(rightWheelClap.transform.localRotation, new Quaternion(0, 0, -50.6f, 0), moveClapDuration);
+			RightClapIsOpen = false;
+		}
+	}
+	
+	private void MoveClaps(ref GameObject clap, Quaternion rotation, ref bool isOpen, float duration){
+		
+		if(!isOpen){
+    		clap.transform.localRotation = Quaternion.Slerp(clap.transform.localRotation, rotation, duration);
+			isOpen = true;
+		}
+		else {
+			clap.transform.localRotation = Quaternion.Slerp(clap.transform.localRotation, rotation, duration);	
+			isOpen = false;
 		}
 	}
 
@@ -393,6 +431,24 @@ public class Airplane : MonoBehaviour {
 														Mathf.Lerp(p.x, movement[i][0], t), 
 														Mathf.Lerp(p.y, movement[i][1], t), 
 														Mathf.Lerp(p.z, movement[i][2], t)); 
+		}
+	}
+	
+	private void PrepareBombs(){
+	
+		if(0 == CurrentBombCount){
+		
+			bombs = new GameObject[6];
+			CurrentBombCount = bombs.Length;
+			
+			for(int i = 0, j = 0; bombs.Length > i; ++i, ++j){
+				
+				if(2 < j)
+					j = 0;
+				
+				SetBomb(ref bombs[i], (2 < i) ? rightBombPosition : leftBombPosition, j);
+				bombs[i].name = "bomb" + i;
+			}
 		}
 	}
 	
@@ -432,6 +488,32 @@ public class Airplane : MonoBehaviour {
 			Fuel = maxFuel;
 	}
 	
+	private void SetBomb(ref GameObject bombObject, GameObject bombPosition, int position){
+		
+		Vector3 dif;
+		const float distanceBetweenABomb = 0.7f;
+		const float distanceBetweenWing = 0.4f;
+		
+		// calc position
+		switch(position){
+			case 1: // left
+				dif = new Vector3(-distanceBetweenABomb, -distanceBetweenWing, 0);
+				break;
+			case 2: // right
+				dif = new Vector3(distanceBetweenABomb, -distanceBetweenWing, 0);
+				break;
+			default: // center
+				dif = new Vector3(0, -distanceBetweenWing, 0);
+				break;
+		}
+		
+		bombObject = Instantiate(bomb, bombPosition.transform.position + dif, bombPosition.transform.rotation) as GameObject;
+		bombObject.transform.parent = transform;
+		bombObject.transform.Rotate(90f, 0, 0);
+		bombObject.rigidbody.useGravity = false;
+		bombPosition.gameObject.tag = "Armed";
+	}
+	
 	/// <summary>
 	/// Sets the missile.
 	/// </summary>
@@ -460,6 +542,7 @@ public class Airplane : MonoBehaviour {
 		if(LeftMissileReservoirIsManned){
 			LeftMissile.Target = target;
 			LeftMissile.Shooted = true;
+			leftMissile.gameObject.transform.Translate(0, -2f, 0);
 			leftMissile.gameObject.transform.parent = null;
 			leftMissilePosition.gameObject.tag = "Disarmed";
 			LeftReloadTime = 0;
@@ -467,6 +550,7 @@ public class Airplane : MonoBehaviour {
 		else if(RightMissileReservoirIsManned){
 			RightMissile.Target = target;
 			RightMissile.Shooted = true;
+			rightMissile.gameObject.transform.Translate(0, -2f, 0);
 			rightMissile.gameObject.transform.parent = null;
 			rightMissilePosition.gameObject.tag = "Disarmed";
 			RightReloadTime = 0;
@@ -478,7 +562,15 @@ public class Airplane : MonoBehaviour {
 	/// </summary>
 	public void Update() {
 		
+		// ammo
+		
+		if(Input.GetKeyUp(KeyCode.Space))
+			DropBomb();
+		
 		Recharge();
+		
+		if(Input.GetKeyUp(KeyCode.B))
+			PrepareBombs();
 	
 		//	Fuel
 		Fuel -= Time.deltaTime;

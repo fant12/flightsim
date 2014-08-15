@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Airplane\Airplane.cs" />
+     <Compile Include="Assets\Scripts\Airplane\Bomb.cs" />
      <Compile Include="Assets\Scripts\Airplane\FlyAndMove.cs" />
      <Compile Include="Assets\Scripts\Airplane\Missile.cs" />
      <Compile Include="Assets\Scripts\Airplane\Sensors\FrontTrigger.cs" />
@@ -58,6 +59,7 @@
      <Compile Include="Assets\Scripts\Debug\FPSCounter.cs" />
      <Compile Include="Assets\Scripts\Enemy\FlyAndMoveEnemy.cs" />
      <Compile Include="Assets\Scripts\Enemy\FollowTarget.cs" />
+     <Compile Include="Assets\Scripts\Explode.cs" />
      <Compile Include="Assets\Scripts\GUI\Text.cs" />
      <Compile Include="Assets\Scripts\Gages\Altimeter.cs" />
      <Compile Include="Assets\Scripts\Gages\Compass.cs" />

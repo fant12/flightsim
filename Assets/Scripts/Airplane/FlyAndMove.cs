@@ -52,7 +52,7 @@ public class FlyAndMove : MonoBehaviour {
 	/// <summary>
 	/// The flight height to move the landing gears.
 	/// </summary>
-	public int heightToMoveLandingGears = 10;
+	public int heightToMoveLandingGears = 6;
 	
 	/// <summary>
 	/// The maximum flight height.
