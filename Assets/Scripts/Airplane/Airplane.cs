@@ -351,7 +351,9 @@ public class Airplane : MonoBehaviour {
 		MoveWheels(ref _movementWheelsDown);
 		
 		if(!FrontClapIsOpen){
-			FrontWheelClapTransform.Rotate(Vector3.forward, 106.5f, Space.Self);
+			Quaternion r = new Quaternion(0, 0, 0, 0);
+    		frontWheelClap.transform.localRotation = Quaternion.Slerp(frontWheelClap.transform.localRotation, r, 5f);		
+			//FrontWheelClapTransform.Rotate(Vector3.forward, 106.5f, Space.Self);
 			FrontClapIsOpen = true;
 		}
 	}
@@ -367,7 +369,9 @@ public class Airplane : MonoBehaviour {
 		//FrontWheelClapTransform = new Quaternion(0,0,Mathf.Lerp(FrontWheelClapTransform.z,-106.5f,(Time.time / duration)),0);
 			
 		if(FrontClapIsOpen){
-			FrontWheelClapTransform.Rotate(Vector3.forward, Mathf.Lerp(FrontWheelClapTransform.rotation.z, -106.5f, Time.time / moveLandingGearDuration), Space.Self);
+			Quaternion r = new Quaternion(0, 0, -106.5f, 0);
+    		frontWheelClap.transform.localRotation = Quaternion.Slerp(frontWheelClap.transform.localRotation, r, 5f);
+			//FrontWheelClapTransform.Rotate(Vector3.forward, Mathf.Lerp(FrontWheelClapTransform.rotation.z, -106.5f, Time.time / moveLandingGearDuration), Space.Self);
 			FrontClapIsOpen = false;
 		}
 	}
