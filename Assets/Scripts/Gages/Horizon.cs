@@ -13,7 +13,7 @@ public class Horizon : MonoBehaviour {
 	public Texture2D foreground;
 	
 	public void OnGUI(){
-		
+	/*	
 		float pitch, tilt;
 		
 		GUI.skin = mainSkin;
@@ -38,6 +38,6 @@ public class Horizon : MonoBehaviour {
 		// draw background in front of the other texture
 		GUI.Label(new Rect(0, 0, 128f, 128f), background);
 	
-		GUI.EndGroup ();
+		GUI.EndGroup ();*/
 	}
 }

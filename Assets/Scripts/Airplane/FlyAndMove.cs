@@ -42,7 +42,12 @@ public class FlyAndMove : MonoBehaviour {
 	/// <summary>
 	/// The acceleration.
 	/// </summary>
-	public float acceleration = 240f;
+	private float acceleration = 240f;
+	
+	/// <summary>
+	/// The decceleration.
+	/// </summary>
+	public float decceleration = 0.05f;
 	
 	/// <summary>
 	/// The gravitation for downlift while driving through landscape.
@@ -68,6 +73,11 @@ public class FlyAndMove : MonoBehaviour {
 	/// The maximum speed for driving.
 	/// </summary>
 	public float maxSpeedForDriving = 600f;
+	
+	/// <summary>
+	/// The velocity that is describes as value between 0 and 1.
+	/// </summary>
+	public float velocity = 0f;
 	
 	
 	// properties
@@ -96,7 +106,7 @@ public class FlyAndMove : MonoBehaviour {
 	/// <value>
 	/// The position.
 	/// </value>
-	public static Vector3 Position { get; set; }
+	public Vector3 Position { get; set; }
 	
 	/// <summary>
 	/// Gets or sets the rotation.
@@ -104,7 +114,7 @@ public class FlyAndMove : MonoBehaviour {
 	/// <value>
 	/// The rotation.
 	/// </value>
-	public static Vector3 Rotation { get; set; }
+	public Vector3 Rotation { get; set; }
 	
 	/// <summary>
 	/// Gets or sets the speed.
@@ -185,7 +195,7 @@ public class FlyAndMove : MonoBehaviour {
 	/// </summary>
 	protected void Accelerate(){
 		
-		transform.Translate(0, 0, 0.05f * Speed * Time.deltaTime);
+		transform.Translate(0, 0, decceleration * Speed * Time.deltaTime);
 		
 		// control minimum Speed for flying
 		

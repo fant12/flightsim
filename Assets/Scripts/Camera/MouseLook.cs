@@ -20,6 +20,21 @@ public class MouseLook : MonoBehaviour {
 	}
 	
 	/// <summary>
+	/// The origin.
+	/// </summary>
+	private Quaternion _origin;
+
+	/// <summary>
+	/// The rotation on x axis.
+	/// </summary>
+	private float _rotationX = 0;
+	
+	/// <summary>
+	/// The rotation on y axis.
+	/// </summary>
+	private float _rotationY = 0;
+		
+	/// <summary>
 	/// The axes.
 	/// </summary>
 	public RotationAxes axes = RotationAxes.MouseXAndY;
@@ -45,11 +60,6 @@ public class MouseLook : MonoBehaviour {
 	public float minimumY = -60f;
 	
 	/// <summary>
-	/// The rotation on y axis.
-	/// </summary>
-	private float rotationY = 0;
-	
-	/// <summary>
 	/// The sensitivity on x axis.
 	/// </summary>
 	public float sensitivityX = 15f;
@@ -58,14 +68,37 @@ public class MouseLook : MonoBehaviour {
 	/// The sensitivity on y axis.
 	/// </summary>
 	public float sensitivityY = 15f;
-	
+
 	
 	// initializer
+	
+	/// <summary>
+	/// Initializes this instance.
+	/// </summary>
 	public void Start(){
 			
-		// Make the rigid body not change rotation
+		// make the rigid body not change rotation
 		if (rigidbody)
 			rigidbody.freezeRotation = true;
+		
+		_origin = transform.localRotation;	
+	}
+	
+	
+	// methods
+	
+	/// <summary>
+	/// Clamps the angle.
+	/// </summary>
+	public static float ClampAngle(float angle, float min, float max){
+		
+		if(-360f > angle)
+			angle += 360f;
+		
+		if(360f < angle)
+			angle -= 360f;
+		
+		return Mathf.Clamp(angle, min, max);
 	}
 	
 	/// <summary>
@@ -92,21 +125,35 @@ public class MouseLook : MonoBehaviour {
 		
 		Focus();
 		
-		if(axes == RotationAxes.MouseXAndY) {
-			float rotationX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivityX;
-		
-			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-			rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
-		
-			transform.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
+		if(RotationAxes.MouseXAndY == axes){
+			
+			// mouse input
+			_rotationX += sensitivityX * Input.GetAxis("Mouse X");
+			_rotationY += sensitivityY * Input.GetAxis("Mouse Y");
+			
+			_rotationX = ClampAngle(_rotationX, minimumX, maximumX);
+			_rotationY = ClampAngle(_rotationY, minimumY, maximumY);
+			
+			Quaternion xQuaternion = Quaternion.AngleAxis(_rotationX, Vector3.up);
+			Quaternion yQuaternion = Quaternion.AngleAxis(_rotationY, Vector3.left);
+			
+			transform.localRotation = _origin * xQuaternion * yQuaternion;
 		}
-		else if(axes == RotationAxes.MouseX)
-			transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+		else if(RotationAxes.MouseX == axes){
+			
+			_rotationX += sensitivityX * Input.GetAxis("Mouse X");
+			_rotationX = ClampAngle(_rotationX, minimumX, maximumX);
+			
+			Quaternion xQuaternion = Quaternion.AngleAxis(_rotationX, Vector3.up);
+			transform.localRotation = _origin * xQuaternion;
+		}
 		else {
-			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-			rotationY = Mathf.Clamp(rotationY, minimumY, maximumY);
-		
-			transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
+			
+			_rotationY += sensitivityY * Input.GetAxis("Mouse Y");
+			_rotationY = ClampAngle(_rotationY, minimumY, maximumY);
+			
+			Quaternion yQuaternion = Quaternion.AngleAxis(_rotationY, Vector3.left);
+			transform.localRotation = _origin * yQuaternion;
 		}
 	}
 }

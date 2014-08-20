@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\Airplane\Sensors\GroundTrigger.cs" />
      <Compile Include="Assets\Scripts\Airplane\Sensors\RearTrigger.cs" />
      <Compile Include="Assets\Scripts\Airplane\Shadow.cs" />
+     <Compile Include="Assets\Scripts\Camera\HUD.cs" />
      <Compile Include="Assets\Scripts\Camera\MouseLook.cs" />
      <Compile Include="Assets\Scripts\Camera\SwitchCamera.cs" />
      <Compile Include="Assets\Scripts\Debug\Debug.cs" />
@@ -62,16 +63,18 @@
      <Compile Include="Assets\Scripts\Explode.cs" />
      <Compile Include="Assets\Scripts\GUI\Text.cs" />
      <Compile Include="Assets\Scripts\Gages\Altimeter.cs" />
+     <Compile Include="Assets\Scripts\Gages\Altimeter2.cs" />
      <Compile Include="Assets\Scripts\Gages\Compass.cs" />
      <Compile Include="Assets\Scripts\Gages\Horizon.cs" />
+     <Compile Include="Assets\Scripts\Gages\Map.cs" />
      <Compile Include="Assets\Scripts\Gages\Tachometer.cs" />
+     <Compile Include="Assets\Scripts\Helper\QuadTree.cs" />
+     <Compile Include="Assets\Scripts\Helper\Rectangle.cs" />
+     <Compile Include="Assets\Scripts\Helper\TextColor.cs" />
      <Compile Include="Assets\Scripts\Initializer.cs" />
      <Compile Include="Assets\Scripts\Level.cs" />
      <None Include="Assets\Materials\Airplane\Shadow\ShadowProjection.shader" />
-     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
- <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
- </Reference>
+     <None Include="Assets\Materials\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

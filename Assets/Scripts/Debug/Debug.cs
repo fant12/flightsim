@@ -30,9 +30,9 @@ public class Debug : MonoBehaviour {
 			GUI.Label(new Rect(0.5f * Screen.width + 16f, Screen.height - 164f, 256f, 256f), "speed: " + Mathf.Round(FlyAndMove.Speed));
 			
 			// rotation
-			GUI.Label(new Rect(0.5f * Screen.width + 176f, Screen.height - 164f, 256f, 256f), "local x:" + Mathf.Round(FlyAndMove.Rotation.x));
-			GUI.Label(new Rect(0.5f * Screen.width - 288f, Screen.height - 174f, 96f, 20f), "global y: " + Mathf.Round(FlyAndMove.Rotation.y));
-			GUI.Label(new Rect(0.5f * Screen.width - 288f, Screen.height - 164f, 96f, 20f), "local z: " + Mathf.Round(FlyAndMove.Rotation.z));
+//			GUI.Label(new Rect(0.5f * Screen.width + 176f, Screen.height - 164f, 256f, 256f), "local x:" + Mathf.Round(FlyAndMove.Rotation.x));
+//			GUI.Label(new Rect(0.5f * Screen.width - 288f, Screen.height - 174f, 96f, 20f), "global y: " + Mathf.Round(FlyAndMove.Rotation.y));
+//			GUI.Label(new Rect(0.5f * Screen.width - 288f, Screen.height - 164f, 96f, 20f), "local z: " + Mathf.Round(FlyAndMove.Rotation.z));
 			
 			// triggers
 			GUI.Label(new Rect(0.5f * Screen.width - 144f, Screen.height - 164f, 256f, 256f), "groundtrigger: " + GroundTrigger.Triggered);

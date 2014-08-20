@@ -1,10 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Airplane\Missile.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Camera\HUD.cs">
     <Files>
-      <File FileName="Assets\Scripts\Airplane\Airplane.cs" Line="390" Column="131" />
-      <File FileName="Assets\Scripts\Airplane\Bomb.cs" Line="4" Column="30" />
-      <File FileName="Assets\Scripts\Airplane\Missile.cs" Line="78" Column="5" />
+      <File FileName="Assets\Scripts\Camera\HUD.cs" Line="118" Column="4" />
+      <File FileName="Assets\Scripts\Gages\Compass.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Gages\Map.cs" Line="28" Column="1" />
+      <File FileName="Assets\Scripts\Airplane\Airplane.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Airplane\FlyAndMove.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Camera\SmoothFollow.js" Line="28" Column="42" />
+      <File FileName="Assets\Scripts\Camera\MouseOrbit.js" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
