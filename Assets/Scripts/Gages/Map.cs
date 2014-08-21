@@ -25,7 +25,8 @@ public class Map : MonoBehaviour {
 	
 	public void Update(){
 		
+		// w: 42000, h: 28000, scale: 1/8
 		Vector3 curPos = Airplane.transform.position;
-		mapSelector.transform.localPosition = new Vector3(curPos.x / 10000, curPos.z / 10000, 2f);
+		mapSelector.transform.localPosition = new Vector3(curPos.x / 80000f, curPos.z / 80000f, 2f);
 	}
 }

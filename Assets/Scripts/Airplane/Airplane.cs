@@ -7,6 +7,16 @@ public class Airplane : MonoBehaviour {
 	// attributes
 	
 	/// <summary>
+	/// The left missile.
+	/// </summary>
+	private GameObject _leftMissile;
+	
+	/// <summary>
+	/// The right missile.
+	/// </summary>
+	private GameObject _rightMissile;
+	
+	/// <summary>
 	/// The movement to lift the wheels down.
 	/// </summary>
 	private float[][] _movementWheelsDown;
@@ -45,11 +55,6 @@ public class Airplane : MonoBehaviour {
 	/// The start position of the left bomb on the airplane.
 	/// </summary>
 	public GameObject leftBombPosition;
-	
-	/// <summary>
-	/// The left missile.
-	/// </summary>
-	private GameObject leftMissile;
 	
 	/// <summary>
 	/// The start position of the left missile on the airplane.
@@ -105,12 +110,7 @@ public class Airplane : MonoBehaviour {
 	/// The start position of the right bomb on the airplane.
 	/// </summary>
 	public GameObject rightBombPosition;
-	
-	/// <summary>
-	/// The right missile.
-	/// </summary>
-	private GameObject rightMissile;
-	
+		
 	/// <summary>
 	/// The start position of the right missile on the airplane.
 	/// </summary>
@@ -138,6 +138,8 @@ public class Airplane : MonoBehaviour {
 	/// The current munition count.
 	/// </value>
 	public int CurrentMunitionCount { get; set; }
+	
+	public float Damage { get; set; }
 	
 	/// <summary>
 	/// Gets or sets the fuel.
@@ -193,10 +195,20 @@ public class Airplane : MonoBehaviour {
 	/// Gets the left missile.
 	/// </summary>
 	/// <value>
+	/// The left missile.
+	/// </value>
+	public GameObject LeftMissile {
+		get { return _leftMissile; }
+	}
+	
+	/// <summary>
+	/// Gets the left missile.
+	/// </summary>
+	/// <value>
 	/// The get left missile.
 	/// </value>
-	public Missile LeftMissile {
-		get { return leftMissile.GetComponent<Missile>(); }
+	public Missile LeftMissileScript {
+		get { return _leftMissile.GetComponent<Missile>(); }
 	}
 	
 	/// <summary>
@@ -229,10 +241,20 @@ public class Airplane : MonoBehaviour {
 	/// Gets the right missile.
 	/// </summary>
 	/// <value>
+	/// The right missile.
+	/// </value>
+	public GameObject RightMissile {
+		get { return _rightMissile; }
+	}
+	
+	/// <summary>
+	/// Gets the right missile.
+	/// </summary>
+	/// <value>
 	/// The get right missile.
 	/// </value>
-	public Missile RightMissile {
-		get { return rightMissile.GetComponent<Missile>(); }
+	public Missile RightMissileScript {
+		get { return _rightMissile.GetComponent<Missile>(); }
 	}
 	
 	/// <summary>
@@ -270,8 +292,8 @@ public class Airplane : MonoBehaviour {
 		
 		// equip
 		
-		SetMissile(ref leftMissile, leftMissilePosition);
-		SetMissile(ref rightMissile, rightMissilePosition);
+		SetMissile(ref _leftMissile, leftMissilePosition);
+		SetMissile(ref _rightMissile, rightMissilePosition);
 		
 		PrepareBombs();
 		
@@ -308,7 +330,7 @@ public class Airplane : MonoBehaviour {
 	public void OnTriggerEnter(Collider collider){
 		
 		if(((int)(0.5f * maxHits)) < HitCount)
-			Damage();
+			Demolish();
 		
 		if(maxHits < HitCount){
 			if("Player".Equals(gameObject.tag))
@@ -321,7 +343,7 @@ public class Airplane : MonoBehaviour {
 	
 	// methods
 	
-	private void Damage(){}
+	private void Demolish(){}
 	
 	public void DropBomb(){
 	
@@ -332,6 +354,8 @@ public class Airplane : MonoBehaviour {
 			// search first non null object
 			for(int i = 0; bombs.Length > i; ++i)
 				if(bombs[i]){
+					//bombs[i].GetComponent<Bomb>().IsReady = true;
+					bombs[i].collider.enabled = true;
 				
 					// set bomb on a position thats can not collide the airplane self
 					Vector3 p = bombs[i].transform.localPosition;
@@ -461,8 +485,8 @@ public class Airplane : MonoBehaviour {
 		
 			if(!LeftMissileReservoirIsManned){
 				if(LeftReloadTime > maxReloadTime){
-					SetMissile(ref leftMissile, leftMissilePosition);
-					LeftMissile.Shooted = false;
+					SetMissile(ref _leftMissile, leftMissilePosition);
+					LeftMissileScript.Shooted = false;
 				}
 				
 				LeftReloadTime += Time.deltaTime;
@@ -470,8 +494,8 @@ public class Airplane : MonoBehaviour {
 				
 			if(!RightMissileReservoirIsManned){
 				if(RightReloadTime > maxReloadTime){
-					SetMissile(ref rightMissile, rightMissilePosition);
-					RightMissile.Shooted = false;
+					SetMissile(ref _rightMissile, rightMissilePosition);
+					RightMissileScript.Shooted = false;
 				}
 				
 				RightReloadTime += Time.deltaTime;
@@ -540,18 +564,18 @@ public class Airplane : MonoBehaviour {
 	public void Shoot(Transform target){
 		
 		if(LeftMissileReservoirIsManned){
-			LeftMissile.Target = target;
-			LeftMissile.Shooted = true;
-			leftMissile.gameObject.transform.Translate(0, -2f, 0);
-			leftMissile.gameObject.transform.parent = null;
+			LeftMissileScript.Target = target;
+			LeftMissileScript.Shooted = true;
+			_leftMissile.gameObject.transform.Translate(0, -2f, 0);
+			_leftMissile.gameObject.transform.parent = null;
 			leftMissilePosition.gameObject.tag = "Disarmed";
 			LeftReloadTime = 0;
 		}
 		else if(RightMissileReservoirIsManned){
-			RightMissile.Target = target;
-			RightMissile.Shooted = true;
-			rightMissile.gameObject.transform.Translate(0, -2f, 0);
-			rightMissile.gameObject.transform.parent = null;
+			RightMissileScript.Target = target;
+			RightMissileScript.Shooted = true;
+			_rightMissile.gameObject.transform.Translate(0, -2f, 0);
+			_rightMissile.gameObject.transform.parent = null;
 			rightMissilePosition.gameObject.tag = "Disarmed";
 			RightReloadTime = 0;
 		}

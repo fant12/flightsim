@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class HUD : MonoBehaviour {
 	
@@ -16,16 +17,33 @@ public class HUD : MonoBehaviour {
 	
 	public TextMesh leftPitchDisplay;
 	
-	public TextMesh rightPitchDisplay;
+	public GameObject pitchAttitude;
 	
-	public GameObject targetDisplay;
+	public TextMesh rightPitchDisplay;
 	
 	public GameObject selector;
 	
-	//private GameObject[] _targetSelectionBorders;
+	public Texture2D selectorDefaultTexture;
+	
+	public Texture2D selectorHoverTexture;
+	
+	public GameObject targetDisplay;
 	
 	
 	// properties
+	
+	private float CurrentTilt { get; set; }
+	
+	private Transform MissileHasTarget { 
+		get {
+			if(Airplane.Instance.missile && Airplane.Instance.LeftMissile && Airplane.Instance.RightMissile){
+				
+				Transform target = Airplane.Instance.LeftMissileScript.Target;
+				return target ? target : Airplane.Instance.RightMissileScript.Target;
+			}
+			return null;
+		} 
+	}
 	
 	private string PitchStringValue {
 		get { 
@@ -41,18 +59,17 @@ public class HUD : MonoBehaviour {
 		}
 	}
 	
-	/*private GameObject[] PossibleTargets{
-		get {
-			return GameObject.FindGameObjectsWithTag("Enemy");
-		}
-	}*/
-		
 	
+	
+	private float Tilt {
+		get { return gameObject.GetComponent<FlyAndMove>().Rotation.z; }
+	}
+	
+
 	// initializer
 	
 	public void Start(){
 		_selectors = new Dictionary<GameObject, GameObject>();
-		//_targetSelectionBorders = new GameObject[PossibleTargets.Length];
 	}
 	
 	
@@ -64,7 +81,11 @@ public class HUD : MonoBehaviour {
 			
 			GameObject newSelector = Instantiate(selector) as GameObject;
 			newSelector.transform.parent = hudCamera.transform;
-			_selectors.Add(collider.gameObject, newSelector);
+			
+			if(!_selectors.ContainsKey(collider.gameObject))
+				_selectors.Add(collider.gameObject, newSelector);
+			else
+				_selectors[collider.gameObject] = newSelector;
 		}
 	}
 	
@@ -88,80 +109,57 @@ public class HUD : MonoBehaviour {
 	public static Vector3 RelativePositionTo(Transform origin, Vector3 to){
 		
 		Vector3 distance = to - origin.position;
-		Vector3 v= new Vector3(Vector3.Dot(distance, origin.right.normalized), Vector3.Dot(distance, origin.up.normalized), Vector3.Dot(distance, origin.forward.normalized));
-		print (v.ToString());
-		return v;
+		return new Vector3(Vector3.Dot(distance, origin.right.normalized),
+							Vector3.Dot(distance, origin.up.normalized),
+							Vector3.Dot(distance, origin.forward.normalized));
+		
 	}
 	
-	/*private void AddSelectionBorder(){
+	private void ShowTarget(GameObject target, GameObject selector){
 		
-		// add a border
-		GameObject border = Instantiate(selector) as GameObject;
-		border.transform.parent = hudCamera.transform;
-		
-		// copy array
-		GameObject[] temp = new GameObject[PossibleTargets.Length];
-
-		for(int i = 0; _targetSelectionBorders.Length > i; ++i)
-			temp[i] = _targetSelectionBorders[i];
-		
-		_targetSelectionBorders = temp;
-		System.GC.Collect(); // call mono gc
-	}
-	*/
-	
-	private void ShowTarget(Transform target, GameObject selector){
-		
-		if(selector){
-			
-			// plane (origin) relative to selector (to)
-			
-			
-			Vector3 curPos = target.transform.position;
-			selector.transform.localPosition = RelativePositionTo(selector.transform, target.transform.position);
-			
-			//selector.transform.localPosition = new Vector3(target.position.x / 100f, target.position.z / 100f, 14f); 	
-			//selector.transform.rotation = target.rotation;
-		}
-		//Vector3 point = hudCamera.WorldToScreenPoint(target.transform.position);
-		//_targetSelectionBorders[borderIndex].transform.position = new Vector3(point.x / Screen.width, point.y / Screen.height, 0);
-	}
-	
-	/*
-	private void SearchTarget(){
-		
-		for(int i = 0; PossibleTargets.Length > i; ++i)
-			if(PossibleTargets[i] && PossibleTargets[i].renderer.isVisible){
-			
-				// linecast
-				Vector3 targetPos = PossibleTargets[i].transform.position;
-				RaycastHit hit = new RaycastHit();
-			
-				// if nothing is obscuring the target
-				if(Physics.Linecast(transform.position, targetPos, out hit) && PossibleTargets[i].transform == hit.transform){
-					
-					if(i > _targetSelectionBorders.Length)
-						AddSelectionBorder();
+		if(target){
+			if(selector){
 				
-					ShowTarget(PossibleTargets[i].transform, i);
-				}
+				if(MissileHasTarget && MissileHasTarget == target.transform)
+					selector.renderer.material.mainTexture = selectorHoverTexture;
+				else
+					selector.renderer.material.mainTexture = selectorDefaultTexture;
+				
+				// plane (origin) relative to enemy (to)
+				Vector3 pos = RelativePositionTo(transform, target.transform.position);
+				selector.transform.localPosition = new Vector3(0.1f * pos.x, 0.1f * pos.z, 14f);
+				
 			}
-			else {
-				GameObject temp = _targetSelectionBorders[i];
-				_targetSelectionBorders[i] = null;
-				Destroy(temp);
-			}
-	}*/
+		}
+		else {
+	
+			// target is destroyed (?), so remove selector, too
+			Destroy(selector);
+		}
+	}
 	
 	public void Update(){
 
-		SetTilt();
+		SetPitch();
+			
+		// if enemies are in residence
+		if(0 < _selectors.Count){
+			
+			// remove destroyed enemies from dictionary
+			var removable = _selectors.Where(v => v.Value == null).ToArray();
+			
+			foreach(var item in removable){
+				_selectors.Remove(item.Key);
+				break;
+			}
 		
-		foreach(KeyValuePair<GameObject, GameObject> enemy in _selectors)
-			ShowTarget(enemy.Key.transform, enemy.Value);
+			// show targets on hud
+			foreach(KeyValuePair<GameObject, GameObject> enemy in _selectors)
+				ShowTarget(enemy.Key, enemy.Value);
+		}
 	}
 	
-	private void SetTilt(){
+	private void SetPitch(){
 		
 		leftPitchDisplay.text = PitchStringValue;
 		rightPitchDisplay.text = PitchStringValue;

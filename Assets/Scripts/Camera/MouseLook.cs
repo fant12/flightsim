@@ -68,8 +68,8 @@ public class MouseLook : MonoBehaviour {
 	/// The sensitivity on y axis.
 	/// </summary>
 	public float sensitivityY = 15f;
-
 	
+		
 	// initializer
 	
 	/// <summary>
@@ -81,7 +81,7 @@ public class MouseLook : MonoBehaviour {
 		if (rigidbody)
 			rigidbody.freezeRotation = true;
 		
-		_origin = transform.localRotation;	
+		_origin = transform.localRotation;
 	}
 	
 	
@@ -111,7 +111,7 @@ public class MouseLook : MonoBehaviour {
 			Ray origin = gameObject.camera.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit = new RaycastHit();
 			
-			if(Physics.Raycast(origin, out hit, 1000))
+			if(Physics.Raycast(origin, out hit, 1000f))
 				if(hit.collider.tag.Equals("Enemy"))
 					Airplane.Instance.Shoot(hit.collider.gameObject.transform);
 			

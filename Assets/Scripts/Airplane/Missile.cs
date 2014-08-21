@@ -66,6 +66,8 @@ public class Missile : Explode {
 	public void Update(){
 	
 		if(Shooted){
+			
+			collider.enabled = true;
 		
 			transform.Translate(speed * Time.deltaTime * Vector3.forward);				
 			
@@ -75,8 +77,7 @@ public class Missile : Explode {
 				ExplodeSelf();
 			
 			if(Target){
-				//Target.Rotate(-180f, 0, 0);
-				transform.LookAt(Target);
+				transform.LookAt(Target); //Target.Rotate(-180f, 0, 0);
 			}
 		}
 	}

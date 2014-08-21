@@ -75,6 +75,11 @@ public class FlyAndMove : MonoBehaviour {
 	public float maxSpeedForDriving = 600f;
 	
 	/// <summary>
+	/// The muffler.
+	/// </summary>
+	public GameObject muffler;
+	
+	/// <summary>
 	/// The velocity that is describes as value between 0 and 1.
 	/// </summary>
 	public float velocity = 0f;
@@ -203,10 +208,22 @@ public class FlyAndMove : MonoBehaviour {
 		if(GroundTrigger.Triggered){
 			
 			// accelerate and deccelerate
-			if(Input.GetButton("Fire1") && maxSpeed > Speed)
+			if(Input.GetButton("Fire1") && maxSpeed > Speed){
+				if(0.3f > decceleration)
+					decceleration += 0.01f * Time.deltaTime;
 				Speed += acceleration * Time.deltaTime;
-			if(Input.GetButton("Fire2") && 0 < Speed)
+			}
+			
+			if(Input.GetButtonDown("Fire1"))
+				muffler.renderer.enabled = true;
+			else
+				muffler.renderer.enabled = false;
+			
+			if(Input.GetButton("Fire2") && 0 < Speed){
+				if(0.01f < decceleration)
+					decceleration -= 0.01f * Time.deltaTime;
 				Speed -= acceleration * Time.deltaTime;
+			}
 		}
 		// in the air
 		else {
@@ -293,16 +310,6 @@ public class FlyAndMove : MonoBehaviour {
 	/// </summary>
 	protected void LimitArea(){
 	
-		// area width and depth
-		if(900f <= transform.position.x)
-			transform.position = new Vector3(0, transform.position.y, transform.position.z);
-		else if(-900f >= transform.position.x)
-			transform.position = new Vector3(900f, transform.position.y, transform.position.z);
-		else if(900f <= transform.position.z) 
-			transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-		else if(-900f >= transform.position.z)
-			transform.position = new Vector3(transform.position.x, transform.position.y, 900f);
-	
 		// area height
 		if(maxFlightHeight < Position.y)
 			transform.position = new Vector3(transform.position.x, maxFlightHeight, transform.position.z);
@@ -375,13 +382,13 @@ public class FlyAndMove : MonoBehaviour {
 		}
 		
 		// rotate back on x-axis if vertical button isn't pressed
-		if(!Input.GetButton("Vertical") && !GroundTrigger.Triggered)
+		/*if(!Input.GetButton("Vertical") && !GroundTrigger.Triggered)
 			if(0 < Rotation.x){
 				if(180f > Rotation.x)
 					transform.Rotate(-50f * Time.deltaTime, 0, 0);
 				//if(180f < Rotation.x) 
 				//	transform.Rotate(50f * Time.deltaTime, 0, 0);
-			}
+			}*/
 	}
 	
 	/// <summary>

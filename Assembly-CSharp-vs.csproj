@@ -44,10 +44,12 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Flak.cs" />
      <Compile Include="Assets\Scripts\Airplane\Airplane.cs" />
      <Compile Include="Assets\Scripts\Airplane\Bomb.cs" />
      <Compile Include="Assets\Scripts\Airplane\FlyAndMove.cs" />
      <Compile Include="Assets\Scripts\Airplane\Missile.cs" />
+     <Compile Include="Assets\Scripts\Airplane\Pilot\PilotAnimation.cs" />
      <Compile Include="Assets\Scripts\Airplane\Sensors\FrontTrigger.cs" />
      <Compile Include="Assets\Scripts\Airplane\Sensors\FrontUpTrigger.cs" />
      <Compile Include="Assets\Scripts\Airplane\Sensors\GroundTrigger.cs" />
@@ -65,6 +67,7 @@
      <Compile Include="Assets\Scripts\Gages\Altimeter.cs" />
      <Compile Include="Assets\Scripts\Gages\Altimeter2.cs" />
      <Compile Include="Assets\Scripts\Gages\Compass.cs" />
+     <Compile Include="Assets\Scripts\Gages\FadeCross.cs" />
      <Compile Include="Assets\Scripts\Gages\Horizon.cs" />
      <Compile Include="Assets\Scripts\Gages\Map.cs" />
      <Compile Include="Assets\Scripts\Gages\Tachometer.cs" />

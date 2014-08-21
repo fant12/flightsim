@@ -33,7 +33,7 @@ public class Explode : Initializer {
 			collision.collider.gameObject.AddComponent<Explode>();
 			collision.collider.gameObject.GetComponent<Explode>().explosionParticle = explosionParticle;
 		}
-		
+	
 		ExplodeSelf();
 	}
 
