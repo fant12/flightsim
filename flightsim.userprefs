@@ -1,17 +1,6 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Airplane\Bomb.cs">
-    <Files>
-      <File FileName="Assets\Scripts\Camera\HUD.cs" Line="124" Column="68" />
-      <File FileName="Assets\Scripts\Camera\SwitchCamera.cs" Line="45" Column="41" />
-      <File FileName="Assets\Scripts\Airplane\Airplane.cs" Line="357" Column="8" />
-      <File FileName="Assets\Scripts\Airplane\FlyAndMove.cs" Line="431" Column="1" />
-      <File FileName="Assets\Flak.cs" Line="57" Column="167" />
-      <File FileName="Assets\Scripts\Explode.cs" Line="20" Column="2" />
-      <File FileName="Assets\Scripts\Airplane\Missile.cs" Line="70" Column="4" />
-      <File FileName="Assets\Scripts\Airplane\Bomb.cs" Line="4" Column="30" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

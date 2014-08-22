@@ -27,10 +27,10 @@ public class Compass : MonoBehaviour {
 			// clipping with groups
 			
 			// group both images
-			GUI.BeginGroup(new Rect(0.5f * Screen.width - 70f, 5f, 256f, 256f));
+			GUI.BeginGroup(new Rect(0.5f * Screen.width - 130f, 5f, 256f, 256f));
 			
 			// group which will be clipped
-			GUI.BeginGroup(new Rect(24f, 40f, 80f, 48f));
+			GUI.BeginGroup(new Rect(24f, 40f, 320f, 48f));
 			
 			// draw the compass inlay
 			GUI.Label(new Rect(inlayOffset, 0, 512f, 512f), foreground);

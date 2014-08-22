@@ -531,7 +531,7 @@ public class Airplane : MonoBehaviour {
 				break;
 		}
 		
-		bombObject = Instantiate(bomb, bombPosition.transform.position + dif, bombPosition.transform.rotation) as GameObject;
+		bombObject = Instantiate(bomb, bombPosition.transform.position + dif, transform.rotation) as GameObject;
 		bombObject.transform.parent = transform;
 		bombObject.transform.Rotate(90f, 0, 0);
 		bombObject.rigidbody.useGravity = false;

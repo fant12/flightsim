@@ -58,14 +58,12 @@
      <Compile Include="Assets\Scripts\Camera\HUD.cs" />
      <Compile Include="Assets\Scripts\Camera\MouseLook.cs" />
      <Compile Include="Assets\Scripts\Camera\SwitchCamera.cs" />
-     <Compile Include="Assets\Scripts\Debug\Debug.cs" />
      <Compile Include="Assets\Scripts\Debug\FPSCounter.cs" />
      <Compile Include="Assets\Scripts\Enemy\FlyAndMoveEnemy.cs" />
      <Compile Include="Assets\Scripts\Enemy\FollowTarget.cs" />
      <Compile Include="Assets\Scripts\Explode.cs" />
      <Compile Include="Assets\Scripts\GUI\Text.cs" />
      <Compile Include="Assets\Scripts\Gages\Altimeter.cs" />
-     <Compile Include="Assets\Scripts\Gages\Altimeter2.cs" />
      <Compile Include="Assets\Scripts\Gages\Compass.cs" />
      <Compile Include="Assets\Scripts\Gages\FadeCross.cs" />
      <Compile Include="Assets\Scripts\Gages\Horizon.cs" />

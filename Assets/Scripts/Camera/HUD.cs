@@ -13,9 +13,17 @@ public class HUD : MonoBehaviour {
 	/// </summary>
 	private Dictionary<GameObject, GameObject> _selectors;
 	
+	public GameObject activeTargetArea;
+	
+	public TextMesh heightText;
+	
+	public Camera fixedCamera;
+	
 	public Camera hudCamera;
 	
 	public TextMesh leftPitchDisplay;
+	
+	public TextMesh lockTimeText;
 	
 	public GameObject pitchAttitude;
 	
@@ -27,12 +35,33 @@ public class HUD : MonoBehaviour {
 	
 	public Texture2D selectorHoverTexture;
 	
+	public TextMesh speedText;
+	
 	public GameObject targetDisplay;
+	
+	public Vector2 targetPos;
 	
 	
 	// properties
 	
 	private float CurrentTilt { get; set; }
+	
+	private FlyAndMove FlyAndMoveScript {
+		get { return gameObject.GetComponent<FlyAndMove>(); }
+	}
+	
+	private string HeightStringValue {
+		get { 
+			// substract 2 because height of airplane
+			return FormatValue(FlyAndMoveScript.Position.y - 2f, true); 
+		}
+	}
+	
+	private float LockTime { get; set; }
+	
+	private string LockTimeStringValue {
+		get { return (0 == LockTime) ? "" : FormatValue(LockTime, false); }
+	}
 	
 	private Transform MissileHasTarget { 
 		get {
@@ -46,23 +75,15 @@ public class HUD : MonoBehaviour {
 	}
 	
 	private string PitchStringValue {
-		get { 
-			float pitch = gameObject.GetComponent<FlyAndMove>().Rotation.x;
-			string result = pitch.ToString("F0");
-			
-			if(10f > pitch)
-				return "00" + result;
-			else if(100f > pitch)
-				return "0" + result;
-			
-			return result; 
-		}
+		get { return FormatValue(FlyAndMoveScript.Rotation.x, false); }
 	}
 	
-	
+	private string SpeedStringValue {
+		get { return FormatValue(FlyAndMoveScript.SpeedValue, true); }
+	}
 	
 	private float Tilt {
-		get { return gameObject.GetComponent<FlyAndMove>().Rotation.z; }
+		get { return FlyAndMoveScript.Rotation.z; }
 	}
 	
 
@@ -106,6 +127,28 @@ public class HUD : MonoBehaviour {
 	
 	// methods
 	
+	private static string FormatValue(float val, bool overThousand){
+	
+		string result = val.ToString("F0");
+		
+		if(overThousand){
+			if(10f > val)
+				return "000" + result;
+			else if(100f > val)
+				return "00" + result;
+			else if(1000f > val)
+				return "0" + result;
+		}
+		else {
+			if(10f > val)
+				return "00" + result;
+			else if(100f > val)
+				return "0" + result;
+		}
+		
+		return result;
+	}
+	
 	public static Vector3 RelativePositionTo(Transform origin, Vector3 to){
 		
 		Vector3 distance = to - origin.position;
@@ -139,8 +182,13 @@ public class HUD : MonoBehaviour {
 	}
 	
 	public void Update(){
-
+		
+		// set the current values for pitch, height and speed
 		SetPitch();
+		heightText.text = HeightStringValue;
+		lockTimeText.text = LockTimeStringValue;
+		speedText.text = SpeedStringValue;
+		
 			
 		// if enemies are in residence
 		if(0 < _selectors.Count){

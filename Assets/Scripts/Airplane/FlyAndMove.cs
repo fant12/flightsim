@@ -78,12 +78,7 @@ public class FlyAndMove : MonoBehaviour {
 	/// The muffler.
 	/// </summary>
 	public GameObject muffler;
-	
-	/// <summary>
-	/// The velocity that is describes as value between 0 and 1.
-	/// </summary>
-	public float velocity = 0f;
-	
+		
 	
 	// properties
 	
@@ -128,6 +123,16 @@ public class FlyAndMove : MonoBehaviour {
 	/// The speed.
 	/// </value>
 	public static float Speed { get; set; }
+	
+	/// <summary>
+	/// Gets the speed value.
+	/// </summary>
+	/// <value>
+	/// The speed value.
+	/// </value>
+	public float SpeedValue {
+		get { return Speed; }
+	}
 	
 	/// <summary>
 	/// Gets the absolute value of curve flight.
